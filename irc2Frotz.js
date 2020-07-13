@@ -15,7 +15,7 @@ const ircNickname = "GameMaster";
 const zMachinePath = '/usr/local/bin/dfrotz';
 
 // Generate a lot of extra output with debug on.
-const debug = false;
+const debug = true;
 
 // Read command-line to see what game we're playing.
 var zFilePath = 'sample.z8';
@@ -105,8 +105,11 @@ ircClient.on('data', (data) => {
       }
       else if (response == 'PRIVMSG') {  // Send any messages to dfrotz and reply with output.
         let command = params.slice(params.indexOf(':') + 1);
-        zMachine.stdin.write(`${command}\r\n`);
-        debugLog(`Sent '${command}' to z-machine.`);
+        // Filter out any ACTION (/me) commands. This allows players to chat without confusing Frotz.
+        if (!command.includes('ACTION')) {
+          zMachine.stdin.write(`${command}\r\n`);
+          debugLog(`Sent '${command}' to z-machine.`);
+        }
       }
     }
   });

@@ -109,3 +109,12 @@ If a player dies or otherwise quits the game, irc2Frotz will leave the channel.
 This is normal behavior.
 
 Congratulations on getting everything installed and happy group adventuring!
+
+*** Some interesting, possibly helpful, features of irc2Frotz.
+Messages can be exchanged between players when they are prefaced by "/me".
+For example: "/me So humid!" sends the message "Dave So humid!" to all players
+in the channel, but does not send it to the z-machine interpreter.
+
+/me is a standard IRC feature called an "Action". All actions are blocked from
+reaching the z-machine interpreter. This way, you can talk to other players
+without getting replies from the z-machine like "I don't know the word 'So.'"
