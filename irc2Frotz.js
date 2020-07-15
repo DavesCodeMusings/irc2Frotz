@@ -9,7 +9,6 @@ const childProcess = require('child_process');
 // Change the host and port number based on your IRC server. 
 const ircHost = "localhost";
 const ircPort = 6667;
-const ircNickname = "GameMaster";
 
 // Change based on your z-machine setup.
 const zMachinePath = '/usr/local/bin/dfrotz';
@@ -20,9 +19,11 @@ const debug = false;
 // Read command-line to see what game we're playing. Default to the sample.
 var zFilePath = 'sample.z8';
 var ircChannel = "#irc2Frotz";
+var ircNickname = "GameMaster";
 if (process.argv.length > 2) {
   zFilePath = process.argv[2];
-  ircChannel = '#' + path.basename(zFilePath, path.extname(zFilePath));
+  ircNickname = path.basename(zFilePath, path.extname(zFilePath));
+  ircChannel = '#' + ircNickname;
 }
 console.log(`Using z-machine file: ${zFilePath}.`);
 
