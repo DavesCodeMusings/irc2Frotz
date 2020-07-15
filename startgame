@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# startgames -- an easy way to run a game in the background with ircFrotz.js
+
+if [ "$1" == "" ]; then
+  echo "Usage $0 <ZFILE>"
+  exit 1
+fi
+
+node irc2Frotz.js $1 > ${1}.log &
