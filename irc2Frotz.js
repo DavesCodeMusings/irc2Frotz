@@ -3,26 +3,28 @@
  * @author David Horton https://github.com/DavesCodeMusings
  */
 const net = require('net');
+const path = require('path');
 const childProcess = require('child_process');
 
 // Change the host and port number based on your IRC server. 
 const ircHost = "localhost";
 const ircPort = 6667;
-const ircChannel = "#game";
 const ircNickname = "GameMaster";
 
 // Change based on your z-machine setup.
 const zMachinePath = '/usr/local/bin/dfrotz';
 
 // Generate a lot of extra output with debug on.
-const debug = true;
+const debug = false;
 
-// Read command-line to see what game we're playing.
+// Read command-line to see what game we're playing. Default to the sample.
 var zFilePath = 'sample.z8';
+var ircChannel = "#irc2Frotz";
 if (process.argv.length > 2) {
   zFilePath = process.argv[2];
+  ircChannel = '#' + path.basename(zFilePath, path.extname(zFilePath));
 }
-console.log(`Using z-machine file: ${zFilePath}`);
+console.log(`Using z-machine file: ${zFilePath}.`);
 
 // Create a client connection to the IRC server and log in.
 const ircClient = net.createConnection(ircPort, ircHost, () => {

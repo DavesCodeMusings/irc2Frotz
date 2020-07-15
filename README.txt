@@ -65,7 +65,7 @@ with make on GNU/Linux systems and use sudo instead of su.
 Congratulations, it gets much easier from here on out.
 
 *** You'll need a story file.
-Unless you want to play the short little sample game, you'll need to download
+Unless you want to play my short little sample game, you'll need to download
 an interactive fiction game in the z-machine format. Old Infocom Zork games
 are available from: http://infocom-if.org/downloads/downloads.html and plenty
 more can be found at: https://www.ifarchive.org/
@@ -78,15 +78,19 @@ In this exampe, we'll use the classic Zork I from infocom-if.org.
 If all goes well, you'll see the following output:
 Using z-machine file: ZORK1.DAT
 Connecting to IRC server.
-Registering the #game channel.
+Registering the #ZORK1 channel.
 
 *** You'll need an IRC client.
 There are many choices for IRC clients. The previously mentioned SDF wiki
 page gives examples for setting up Pidgin and Thunderbird. Hexchat is another
 popular option.
 
-Once oyu have the client set up to attach to your IRC server, join the #game
-channel. Anytime someone new joins, irc2Frotz.js will issue the "look" command
+Once you have the client set up to attach to your IRC server, join the #<game>
+channel. The actual name of the channel is the story file minus the extension.
+So running sample.z8 creates a channel called #sample. This way you can easily
+run multiple games, each on its own channel.
+
+Anytime someone new joins, irc2Frotz.js will issue the "look" command
 to dfrotz so new players can get their bearings.
 
 *** You may need to adjust fakelag on your IRC server.
@@ -98,23 +102,30 @@ configuration for fakelag. In inspirc.conf it's called commandrate.
 *** Keeping irc2Frotz running.
 There is no provision within irc2Frotz.js to run as a daemon precess. The
 usual methods of sending stdout to a file and putting it in the background
-will work. For example: node irc2Frotz.js ZORK1.DAT > irc2Frotz.log &
+will work. For example: node irc2Frotz.js ZORK1.DAT > zork1.log &
 
 *** In case things go badly.
 irc2Frotz.js has a setting for debug. Normally, it is set to false and output
 is minimal. Set it to true and conversations between irc2Frotz and the IRC
 server are disected and logged on the console.
 
+*** Making it stop.
 If a player dies or otherwise quits the game, irc2Frotz will leave the channel.
-This is normal behavior.
+This is normal behavior. You can also end the game by killing its process ID.
 
-Congratulations on getting everything installed and happy group adventuring!
+For example:
+ps auxw | grep irc2Frotz
+kill <PID of game>
 
 *** Some interesting, possibly helpful, features of irc2Frotz.
 Messages can be exchanged between players when they are prefaced by "/me".
-For example: "/me So humid!" sends the message "Dave So humid!" to all players
-in the channel, but does not send it to the z-machine interpreter.
+For example: Dave types: "/me So humid!" and irc2Frotz sends the message
+"Dave So humid!" to all players in the channel, but not to the z-machine
+interpreter.
 
-/me is a standard IRC feature called an "Action". All actions are blocked from
-reaching the z-machine interpreter. This way, you can talk to other players
-without getting replies from the z-machine like "I don't know the word 'So.'"
+/me is a standard IRC feature called an "Action". All actions are blocked
+from reaching the z-machine. This way, you can talk to other players without
+getting replies from the z-machine like "I don't know the word 'So.'"
+
+
+Congratulations on getting everything installed and happy group adventuring!
