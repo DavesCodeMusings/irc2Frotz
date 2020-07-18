@@ -5,27 +5,29 @@ getting it's input and output from an interactive fiction z-machine like
 Frotz. The result is anything typed in the IRC channel is interpreted as
 an action in the interactive fiction story.
 
-Example of signing into the default #game channel and running the command
-"node irc2Frotz.js sample.z8"
+When starting a game from command-line with the supplied shell script:
+irc2Frotz$ ./startgame Suburbia.z8
 
-GameMaster:   To Live and Die in Suburbia
-GameMaster:   An Interactive Fiction by David Horton
-GameMaster:   Release 1 / Serial number 200712 / Inform 7 build 6M62 (I6/v6.33 lib 6/12N)
-GameMaster: .
-GameMaster:   Sidewalk
-GameMaster:   You are standing on the Sidewalk between a two-story, post World War II red
-GameMaster:   brick bungalow with a nicely manicured front lawn, and a Quiet Neighborhood
-GameMaster:   Street. Tall oaks cast dappled shadows all around, and the birds are
-GameMaster:   exchanging pleasantries through song. There is a man standing on his front
-GameMaster:   porch. He is not smiling.
-GameMaster: > >
+In your IRC client, on channel #Suburbia, you will see: 
+
+Suburbia:   To Live and Die in Suburbia
+Suburbia:   An Interactive Fiction by David Horton
+Suburbia:   Release 1 / Serial number 200712 / Inform 7 build 6M62 (I6/v6.33 lib 6/12N)
+Suburbia: .
+Suburbia:   Sidewalk
+Suburbia:   You are standing on the Sidewalk between a two-story, post World War II red
+Suburbia:   brick bungalow with a nicely manicured front lawn, and a Quiet Neighborhood
+Suburbia:   Street. Tall oaks cast dappled shadows all around, and the birds are
+Suburbia:   exchanging pleasantries through song. There is a man standing on his front
+Suburbia:   porch. He is not smiling.
+Suburbia: > >
 Dave: go south
-GameMaster:    Quiet Neighborhood Street
-GameMaster: .
-GameMaster:   Quiet Neighborhood Street
-GameMaster:   You're standing in the middle of the street. Probably not the safest place
-GameMaster:   to be, despite the lack of traffic at the moment.
-GameMaster: > > 
+Suburbia:    Quiet Neighborhood Street
+Suburbia: .
+Suburbia:   Quiet Neighborhood Street
+Suburbia:   You're standing in the middle of the street. Probably not the safest place
+Suburbia:   to be, despite the lack of traffic at the moment.
+Suburbia: > > 
 
 The idea is to allow multiple people to share in what would typically be a
 single-player adventure.
@@ -50,7 +52,7 @@ a version of Frotz tailored to dumb terminals. Unfortunately, dfrotz is not
 included in the FreeBSD package for Frotz. This means compiling from source.
 
 It's not terribly difficult, but you will need the git client and developer
-tools for C programs installed.
+tools for C programs installed as prerequisites.
 
 Here's the commands needed for FreeBSD:
 1. git https://github.com/DavidGriffith/frotz.git
@@ -87,22 +89,24 @@ popular option.
 
 Once you have the client set up to attach to your IRC server, join the #<game>
 channel. The actual name of the channel is the story file minus the extension.
-So running sample.z8 creates a channel called #sample. This way you can easily
-run multiple games, each on its own channel.
+So running Game.z8 creates a channel called #Game. This way you can easily
+run multiple games, each on its own channel, named after its z-file.
 
-Anytime someone new joins, irc2Frotz.js will issue the "look" command
-to dfrotz so new players can get their bearings.
+Anytime someone new joins, irc2Frotz.js will automatically issue the "look"
+command to dfrotz so new players can get their bearings.
 
 *** You may need to adjust fakelag on your IRC server.
 IRC servers sometimes have a feature to slow down the output of any user who
 is sending mass content. The replies from dfrotz invariably run up against
 this rule. If you see responses suddenly slow to a crawl, check your IRC
-configuration for fakelag. In inspirc.conf it's called commandrate.
+configuration for fakelag. In inspirc.conf it's a setting called commandrate.
 
 *** Keeping irc2Frotz running.
-There is no provision within irc2Frotz.js to run as a daemon precess. The
-usual methods of sending stdout to a file and putting it in the background
-will work. For example: node irc2Frotz.js ZORK1.DAT > zork1.log &
+There is a shell script called startgame that will take the name of a z-file
+and do all the work of firing it up, putting it in the background, and sending
+log messages to a similarly named file (the z-file name with a .log extension.)
+
+The manual equivalent is "node irc2Frotz.js ZORK1.DAT > ZORK1.DAT.log &
 
 *** In case things go badly.
 irc2Frotz.js has a setting for debug. Normally, it is set to false and output
@@ -112,10 +116,14 @@ server are disected and logged on the console.
 *** Making it stop.
 If a player dies or otherwise quits the game, irc2Frotz will leave the channel.
 This is normal behavior. You can also end the game by killing its process ID.
+To get a listing of PIDs on Unix-like OS, run the lsgames shell script.
 
-For example:
-ps auxw | grep irc2Frotz
-kill <PID of game>
+It will output a list of games, like this:
+irc2Frotz$ ./lsgames
+EventHorizon.z8 (64710)
+Suburbia.z8 (64734)
+
+The PID is in parentheses. Just copy and paste to kill it.
 
 *** Some interesting, possibly helpful, features of irc2Frotz.
 Messages can be exchanged between players when they are prefaced by "/me".
@@ -124,8 +132,8 @@ For example: Dave types: "/me So humid!" and irc2Frotz sends the message
 interpreter.
 
 /me is a standard IRC feature called an "Action". All actions are blocked
-from reaching the z-machine. This way, you can talk to other players without
-getting replies from the z-machine like "I don't know the word 'So.'"
+from reaching the z-machine. This way, players can interact without getting
+replies from the z-machine like "I don't know the word 'So.'"
 
 
 Congratulations on getting everything installed and happy group adventuring!
