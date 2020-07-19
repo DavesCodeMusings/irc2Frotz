@@ -2,9 +2,36 @@
 #
 # startgames -- an easy way to run a game in the background with ircFrotz.js
 
-if [ "$1" == "" ]; then
+# Given the game's z-file name, return the PID.
+get_game_pid()
+{
+  echo $(ps | grep "node irc2Frotz.js $1" | grep -v grep | awk -F' ' '{ print $1 }')
+}
+
+# Check required command-line parameter.
+if [ "$1" != "" ]; then
+
+  # Make sure it's not already running.
+  PID=$(get_game_pid $1)
+  if [ "$PID" == "" ]; then
+    node irc2Frotz.js $1 > ${1}.log &
+    sleep 1
+
+    # Verify start-up and report.
+    PID=$(get_game_pid $1)
+    if [ "$PID" != "" ]; then
+      echo "$1 ($PID)"
+    else
+      echo "$1 failed to start. See ${1}.log for details."
+      RC=3
+    fi
+  else
+    echo "$1 already running as $PID."
+    RC=2
+  fi
+else
   echo "Usage $0 <ZFILE>"
-  exit 1
+  RC=1
 fi
 
-node irc2Frotz.js $1 > ${1}.log &
+exit $RC

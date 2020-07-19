@@ -1,9 +1,4 @@
 #!/bin/sh
 #
 # lsgames -- a simple script to keep track of multiple running irc2Frotz games
-for GAME in *.z?; do
-  PID=$(ps | grep "node .* $GAME" | grep -v grep | awk -F' ' '{ print $1 }')
-  if [ $PID ]; then
-    echo "$GAME ($PID)"
-  fi
-done  
+ps | grep 'node irc2Frotz.js' | grep -v grep | awk -F' ' '{ printf("%s (%i)\n"), $7, $1 }'
