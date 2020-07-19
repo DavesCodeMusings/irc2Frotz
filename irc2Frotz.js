@@ -5,6 +5,7 @@
 const net = require('net');
 const path = require('path');
 const childProcess = require('child_process');
+const { on } = require('process');
 
 // Change the host and port number based on your IRC server. 
 const ircHost = "localhost";
@@ -15,11 +16,14 @@ const zMachinePath = '/usr/local/bin/dfrotz';
 
 // Generate a lot of extra output with debug on.
 const debug = false;
+function debugLog(output) {
+  if (debug) console.log(output);
+}
 
-// Read command-line to see what game we're playing. Default to the sample.
-var zFilePath = 'sample.z8';
+// Read command-line to see what game we're playing. Default to the included sample.
+var zFilePath = 'Suburbia.z8';
 var ircChannel = "#irc2Frotz";
-var ircNickname = "GameMaster";
+var ircNickname = "SampleGame";
 if (process.argv.length > 2) {
   zFilePath = process.argv[2];
   ircNickname = path.basename(zFilePath, path.extname(zFilePath));
@@ -27,19 +31,22 @@ if (process.argv.length > 2) {
 }
 console.log(`Using z-machine file: ${zFilePath}.`);
 
-// Create a client connection to the IRC server and log in.
-const ircClient = net.createConnection(ircPort, ircHost, () => {
-  console.log('Connecting to IRC server.');
-  ircClient.write(`NICK ${ircNickname}\r\n`);
-  ircClient.write('USER zmachine 0 * Z-Machine Interpreter\r\n');
-});
-
 // To be used later when creating the child process.
 var zMachine;
 
-function debugLog(output) {
-  if (debug) console.log(output);
-}
+// Create a client connection to the IRC server and log in.
+const ircClient = net.createConnection(ircPort, ircHost, () => {
+  console.log(`Connecting to IRC server ${ircHost}:${ircPort}...`);
+});
+ircClient.on('connect', () => {
+  console.log('Conncted.');
+  console.log(`Registering nickname ${ircNickname}...`);
+  ircClient.write(`NICK ${ircNickname}\r\n`);
+  ircClient.write('USER zmachine 0 * Z-Machine Interpreter\r\n');
+});
+ircClient.on('error', (err) => {
+  console.log(`IRC client error: ${err}. Review the IRC server log for more specific information.`);
+});
 
 ircClient.on('data', (data) => {
   
