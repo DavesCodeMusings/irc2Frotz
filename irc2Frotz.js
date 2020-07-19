@@ -29,7 +29,6 @@ if (process.argv.length > 2) {
   ircNickname = path.basename(zFilePath, path.extname(zFilePath));
   ircChannel = '#' + ircNickname;
 }
-console.log(`Using z-machine file: ${zFilePath}.`);
 
 // To be used later when creating the child process.
 var zMachine;
@@ -39,15 +38,14 @@ const ircClient = net.createConnection(ircPort, ircHost, () => {
   console.log(`Connecting to IRC server ${ircHost}:${ircPort}...`);
 });
 ircClient.on('connect', () => {
-  console.log('Conncted.');
-  console.log(`Registering nickname ${ircNickname}...`);
+  console.log('Connected.');
+  console.log(`Registering nickname ${ircNickname}.`);
   ircClient.write(`NICK ${ircNickname}\r\n`);
   ircClient.write('USER zmachine 0 * Z-Machine Interpreter\r\n');
 });
 ircClient.on('error', (err) => {
   console.log(`IRC client error: ${err}. Review the IRC server log for more specific information.`);
 });
-
 ircClient.on('data', (data) => {
   
   // Split the input buffer into lines of text. 
@@ -83,12 +81,17 @@ ircClient.on('data', (data) => {
 
       // Compare server responses to decide what to do next.
       if (response == '004') {  // 001 - 004 are generated in sequence on successful registration.
-        console.log(`Registering the ${ircChannel} channel.`);
+        console.log(`Registering channel ${ircChannel}.`);
         ircClient.write(`JOIN ${ircChannel}\r\n`);
         ircClient.write(`TOPIC ${ircChannel} Interactive Fiction\r\n`);
 
         // Spawn the Interactive Fiction interpreter, passing text back and forth.
+        console.log(`Starting z-machine ${zMachinePath} ${zFilePath}.`);
         zMachine = childProcess.spawn(zMachinePath, [zFilePath]);
+        zMachine.on('error', (err) => {
+          console.log(`Z-machine error: ${err}.`); 
+          ircClient.end();
+        });
         zMachine.stdout.on('data', (data) => {
           let stdoutLines = data.toString().split("\n");
           stdoutLines.forEach(line => {
@@ -98,7 +101,7 @@ ircClient.on('data', (data) => {
           });
         });
         zMachine.stdin.on('error', () => {
-          console.log(`Z-Machine ${zMachinePath} died.`);
+          console.log(`Z-Machine  died.`);
           ircClient.end();
         });
       }
