@@ -113,6 +113,20 @@ irc2Frotz.js has a setting for debug. Normally, it is set to false and output
 is minimal. Set it to true and conversations between irc2Frotz and the IRC
 server are disected and logged on the console.
 
+If you're having trouble with games not starting, check the log file output.
+A successful startup will look like this:
+
+Connecting to IRC server localhost:6667...
+Connected.
+Registering nickname Suburbia.
+Registering channel #Suburbia.
+Starting z-machine /usr/local/bin/dfrotz Suburbia.z8.
+
+If there are errors:
+* Make sure the game file exists.
+* Try running the game using dfrotz on the command-line.
+* Check the IRC server logs. Many servers limit the max. number of connections.
+
 *** Making it stop.
 If a player dies or otherwise quits the game, irc2Frotz will leave the channel.
 This is normal behavior. You can also end the game by killing its process ID.
